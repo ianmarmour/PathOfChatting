@@ -1,0 +1,24 @@
+{
+  "name": "pathofchatting",
+  "version": "1.0.0",
+  "description": "Path of Exile Remote Chat Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node .\\src\\index.js"
+  },
+  "author": "Ian Armour",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "apollo-link-http": "^1.5.15",
+    "apollo-link-ws": "^1.0.18",
+    "apollo-server": "^2.6.4",
+    "ffi": "^2.3.0",
+    "graphql": "^14.3.1",
+    "graphql-subscriptions": "^1.1.0",
+    "robotjs": "^0.5.1",
+    "subscriptions-transport-ws": "^0.9.16",
+    "tail": "^2.0.2",
+    "win32-api": "^6.1.0"
+  }
+}
