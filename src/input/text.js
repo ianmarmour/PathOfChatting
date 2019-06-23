@@ -1,11 +1,11 @@
 var robot = require("robotjs");
 
 class Text {
-    submitMessage(message) {
-        robot.keyTap('enter');
-        robot.typeStringDelayed(message, 50)
-        robot.keyTap('enter')
-    }
+  submitMessage(message) {
+    robot.keyTap("enter");
+    robot.typeStringDelayed(message, 200);
+    robot.keyTap("enter");
+  }
 }
 
-module.exports = Text
+module.exports = Text;
