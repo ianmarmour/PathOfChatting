@@ -4,9 +4,12 @@ Tail = require("tail").Tail;
 const http = require("http");
 const express = require("express");
 const { ApolloServer, gql, PubSub } = require("apollo-server-express");
+const config = require('config');
 
 const CHAT_CHANNEL = "messageRecieved";
 const pubsub = new PubSub();
+const logConfig = config.get('LogLocation')
+//logConfig.replace("\", "\\")
 
 options = {
   separator: /[\r]{0,1}\n/,
@@ -18,7 +21,7 @@ options = {
   useWatchFile: true
 };
 this.tail = new Tail(
-  "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Path of Exile\\logs\\Client.txt",
+    logConfig,
   options
 );
 this.tail.on("line", function(data) {
@@ -105,12 +108,12 @@ server.installSubscriptionHandlers(httpServer);
 
 const PORT = 4000;
 // ⚠️ Pay attention to the fact that we are calling `listen` on the http server variable, and not on `app`.
-httpServer.listen(PORT, "192.168.1.157", () => {
+httpServer.listen(PORT, () => {
   console.log(
-    `🚀 Server ready at http://192.168.1.157:${PORT}${server.graphqlPath}`
+    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
   );
   console.log(
-    `🚀 Subscriptions ready at ws://192.168.1.157:${PORT}${
+    `🚀 Subscriptions ready at ws://localhost:${PORT}${
       server.subscriptionsPath
     }`
   );
