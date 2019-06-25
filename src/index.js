@@ -22,7 +22,28 @@ this.tail = new Tail(
   options
 );
 this.tail.on("line", function(data) {
-  pubsub.publish(CHAT_CHANNEL, { messageRecieved: { text: data } });
+  // Generate the unique ID from base64 string encode.
+  let buff = Buffer.from(data);
+  let base64id = buff.toString("base64");
+
+  let dateRegex = /^\d+\/\d+\/\d+\s\d+:\d+:\d+/;
+  let createdDate = data.match(dateRegex)[0];
+  let userRegex = /([^;])(.*)(:)/;
+  let userName = data.match(userRegex)[2];
+  let user = { name: userName };
+
+  let textRegex = /([^;].*:)(.*)/;
+  let messagetext = data.match(textRegex)[2];
+  if (userName != "GeorginaSoros") {
+    pubsub.publish(CHAT_CHANNEL, {
+      messageRecieved: {
+        id: base64id,
+        text: messagetext,
+        createdAt: createdDate,
+        user: user
+      }
+    });
+  }
   console.log(data);
 });
 
@@ -36,7 +57,14 @@ const typeDefs = gql`
   }
 
   type Message {
+    id: String!
     text: String!
+    createdAt: String!
+    user: User!
+  }
+
+  type User {
+    name: String!
   }
 
   type Subscription {
