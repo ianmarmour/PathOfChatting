@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node .\\src\\index.js"
+    "start": "node ./src/index.js"
   },
   "author": "Ian Armour",
   "license": "BSD-2-Clause",
@@ -18,9 +18,14 @@
     "ffi": "^2.3.0",
     "graphql": "^14.3.1",
     "graphql-subscriptions": "^1.1.0",
+    "ref": "^1.3.5",
     "robotjs": "^0.5.1",
     "subscriptions-transport-ws": "^0.9.16",
     "tail": "^2.0.2",
     "win32-api": "^6.1.0"
+  },
+  "devDependencies": {
+    "electron": "^5.0.5",
+    "electron-rebuild": "^1.8.5"
   }
 }

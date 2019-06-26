@@ -4,12 +4,11 @@ Tail = require("tail").Tail;
 const http = require("http");
 const express = require("express");
 const { ApolloServer, gql, PubSub } = require("apollo-server-express");
-const config = require('config');
+const config = require("config");
 
 const CHAT_CHANNEL = "messageRecieved";
 const pubsub = new PubSub();
-const logConfig = config.get('LogLocation')
-//logConfig.replace("\", "\\")
+const logConfig = config.get("LogLocation");
 
 options = {
   separator: /[\r]{0,1}\n/,
@@ -20,10 +19,8 @@ options = {
   flushAtEOF: true,
   useWatchFile: true
 };
-this.tail = new Tail(
-    logConfig,
-  options
-);
+
+this.tail = new Tail(logConfig, options);
 this.tail.on("line", function(data) {
   // Generate the unique ID from base64 string encode.
   let buff = Buffer.from(data);
@@ -31,13 +28,13 @@ this.tail.on("line", function(data) {
 
   let dateRegex = /^\d+\/\d+\/\d+\s\d+:\d+:\d+/;
   let createdDate = data.match(dateRegex)[0];
-  let userRegex = /([^;])(.*)(:)/;
-  let userName = data.match(userRegex)[2];
+  let userRegex = /(\[INFO.*\])(.)(.*)(:)/;
+  let userName = data.match(userRegex)[3];
   let user = { name: userName };
 
   let textRegex = /([^;].*:)(.*)/;
   let messagetext = data.match(textRegex)[2];
-  if (userName != "GeorginaSoros") {
+  if (!userName.includes("GeorginaSoros")) {
     pubsub.publish(CHAT_CHANNEL, {
       messageRecieved: {
         id: base64id,
@@ -56,7 +53,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    sendMessage(message: String!): Message
+    sendMessage(
+      id: String!
+      text: String!
+      createdAt: String!
+      user: UserInput!
+    ): Message
   }
 
   type Message {
@@ -66,6 +68,9 @@ const typeDefs = gql`
     user: User!
   }
 
+  input UserInput {
+    name: String
+  }
   type User {
     name: String!
   }
@@ -78,14 +83,18 @@ const typeDefs = gql`
 const resolvers = {
   Mutation: {
     sendMessage: (root, args) => {
-      const message = { text: args.message };
+      const message = {
+        id: args.id,
+        text: args.text,
+        createdAt: args.createdAt,
+        user: args.user
+      };
       window_controller = new Window();
       text_controller = new Text();
 
       window_controller.focusWindow();
-      text_controller.submitMessage(args.message);
-      pubsub.publish(CHAT_CHANNEL, { messageRecieved: { text: args.message } });
-      return message;
+      text_controller.submitMessage(args.text);
+      console.log(message);
     }
   },
   Subscription: {
